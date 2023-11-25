@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/perfildash.css">
+
+
+    <title>Perfil</title>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+          <h1 class="titulo">Art Tree</h1>
+          <ul class="navbar">
+            <li class="agora">
+              <a href="./index.html">Inicio</a>
+            </li>
+            <li>
+              <a href="login.html">Login</a>
+            </li>
+            <li>
+              <a href="cadastro.html">Cadastro</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    <div class="container">
+        <nav class="sidebar">
+            <ul>
+                <li><a href="#">Dashboard</a></li>
+                <li><a href="#">Perfil</a></li>
+                <li><a href="#">Configurações</a></li>
+                <li><a href="#">Sair</a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <div class="profile-box">
+                <h2>Nome do Usuário</h2>
+                <p>Email: usuario@email.com</p>
+                Quais são as artes que você mais gosta? <br>
+                <input type="text" id="input_filmes" placeholder="Exemplo: Naruto">
+                <button onclick="Cadastrar()">Cadastrar Arte</button>
+            
+                <button onclick="Favoritos()">Ver Artes</button> <br>
+            
+                <div id="exibir"></div>
+            
+            
+                <script>
+            
+                    var ListaArtes = [];
+            
+                    function Cadastrar() {
+                        var artes = input_filmes.value;
+                        var naoCadastrado = true;
+            
+                        for (var i = 0; i < ListaArtes.length; i++) {
+                            if (ListaArtes[i] === artes) {
+                                alert('Você já inseriu essa arte!');
+                                naoCadastrado = false;
+                                break;
+                            }
+                        }
+            
+                        if (artes == "") {
+                            naoCadastrado = false;
+                            alert('O campo precisa ser preenchido com alguma arte!')
+                        }
+            
+                        if (naoCadastrado) {
+                            ListaArtes.push(artes);
+                        }
+            
+            
+                    }
+            
+            
+                    function Favoritos() {
+                        exibir.innerHTML = "";
+                        var contador = 0;
+            
+                        exibir.innerHTML += `Total: <b>${ListaArtes.length}</b><br>`
+            
+                        while (contador <= ListaArtes.length - 1) {
+            
+                            exibir.innerHTML += `${contador + 1}º: ${ListaArtes[contador]}<br>`
+            
+                            contador++
+            
+                        }
+            
+            
+                        exibir.innerHTML += `A arte que mais gosta é <b> ${ListaArtes[0]}. </b> <br> E desses, o que menos gosta é <b> ${ListaArtes[ListaArtes.length - 1]} </b>`
+                    }
+            
+                </script>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

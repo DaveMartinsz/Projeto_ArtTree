@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art Tree</title>
+</head>
+
+<body>
+
+    Quais são as artes que você mais gosta? <br>
+    <input type="text" id="input_filmes" placeholder="Exemplo: Dragon Ball">
+    <button onclick="Cadastrar()">Cadastrar Arte</button>
+
+    <button onclick="Favoritos()">Ver Artes</button> <br>
+
+    <div id="exibir"></div>
+
+
+    <script>
+
+        var ListaArtes = [];
+
+        function Cadastrar() {
+            var artes = input_filmes.value;
+            var naoCadastrado = true;
+
+            for (var i = 0; i < ListaArtes.length; i++) {
+                if (ListaArtes[i] === artes) {
+                    alert('Você já inseriu essa arte!');
+                    naoCadastrado = false;
+                    break;
+                }
+            }
+
+            if (artes == "") {
+                naoCadastrado = false;
+                alert('O campo precisa ser preenchido com alguma arte!')
+            }
+
+            if (naoCadastrado) {
+                ListaArtes.push(artes);
+            }
+
+
+        }
+
+
+        function Favoritos() {
+            exibir.innerHTML = "";
+            var contador = 0;
+
+            exibir.innerHTML += `Total: <b>${ListaArtes.length}</b><br>`
+
+            while (contador <= ListaArtes.length - 1) {
+
+                exibir.innerHTML += `${contador + 1}º - ${ListaArtes[contador]}<br>`
+
+                contador++
+
+            }
+
+
+            exibir.innerHTML += `A arte que mais gosta é ${ListaArtes[0]}. <br> E desses, o que menos gosta é ${ListaArtes[ListaArtes.length - 1]}`
+        }
+
+    </script>
+
+
+</body>
+
+</html>
