@@ -23,7 +23,7 @@ body {
 
 .header a {
   text-decoration: none;
-  color: rgb(0, 187, 255)
+  color: rgb(35, 255, 215);
 }
 
 .agora {
@@ -260,7 +260,7 @@ input {
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
-  border-right: 3px solid #32b9cd;
+  border-right: 3px solid #2dffb9;
   background-color: #212124;
   /* border: 3px solid pink; */
 }
@@ -276,7 +276,7 @@ input {
 }
 
 .header-left h1 {
-  color: #32b9cd;
+  color: #2dffb9;
 }
 
 .hello {
@@ -286,7 +286,7 @@ input {
 }
 
 .hello h3 {
-  color: #e3b062;
+  color: #ecf8ff;
   font-weight: 300;
   font-size: 1.2rem;
 }

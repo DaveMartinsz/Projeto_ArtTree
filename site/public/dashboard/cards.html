@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AquaTech | Tempo Real</title>
+    <title>Art Tree | Perfil</title>
 
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/dashboards.css">
@@ -19,20 +19,20 @@
         rel="stylesheet">
 </head>
 
-<body onload="validarSessao(), exibirAquarios(),  atualizacaoPeriodica()">
+<body onload="Favoritos(), validarSessao(), exibirAquarios(), atualizacaoPeriodica()">
 
     <div class="janela">
 
         <div class="header-left dash-header">
 
-            <h1>AquaTech</h1>
+            <h1>Art Tree</h1>
 
             <div class="hello">
                 <h3>Olá, <span id="b_usuario">usuário</span>!</h3>
             </div>
 
             <div class="btn-nav">
-                <h3>Aquários</h3>
+                <h3>Minha Lista</h3>
             </div>
 
             <div class="btn-nav-white">
@@ -43,7 +43,7 @@
 
             <div class="btn-nav-white">
                 <a href="./mural.html">
-                    <h3>Mural de Avisos</h3>
+                    <h3>Quiz</h3>
                 </a>
             </div>
 
@@ -54,10 +54,175 @@
         </div>
 
         <div class="dash">
+
+            <div class="fundodash">
+
+                <div class="containerdash">
+
+                    Quais são as artes que você mais gosta? <br>
+                    <input type="text" id="input_artes" placeholder="Exemplo: Dragon Ball">
+
+                    <div class="botaodireita">
+                        <button onclick="Cadastrar()" class="botao1">Cadastrar Arte</button>
+
+                        <!-- <button onclick="Favoritos()" class="botao2">Ver Artes</button> <br> -->
+
+                        <button onclick="deletarLista()" class="botao1">Limpar Lista</button>
+                    </div>
+
+                    <div id="exibir"></div>
+
+                    <script>
+
+                        var ListaBancoArtes = [];
+                        var ListaArtes = [];
+
+                        function Cadastrar() {
+                            var artes = input_artes.value;
+                            var naoCadastrado = true;
+
+                            for (var i = 0; i < ListaArtes.length; i++) {
+                                if (ListaArtes[i].ArtesQueGosta === artes) {
+                                    alert('Você já inseriu essa arte!');
+                                    naoCadastrado = false;
+                                    break;
+                                }
+                            }
+
+                            if (artes == "") {
+                                naoCadastrado = false;
+                                alert('O campo precisa ser preenchido com alguma arte!')
+                            }
+
+                            if (naoCadastrado) {
+                                // ListaArtes.push(artes);
+
+                                fetch("/aquarios/cadastrar", {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                    },
+                                    body: JSON.stringify({
+                                        // crie um atributo que recebe o valor recuperado aqui
+                                        // Agora vá para o arquivo routes/usuario.js
+
+                                        artesServer: artes,
+                                        fkUsuarioServer: sessionStorage.ID_USUARIO
+
+                                        // nomeServer: nomeVar,
+                                        // emailServer: emailVar,
+                                        // senhaServer: senhaVar,
+                                        // empresaServer: empresaVar
+                                    }),
+                                })
+                                    .then(function (resposta) {
+                                        console.log("resposta: ", resposta);
+
+                                        if (resposta.ok) {
+
+                                            Favoritos()
+                                            // cardErro.style.display = "block";
+
+                                            // mensagem_erro.innerHTML =
+                                            //     "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
+
+                                            // setTimeout(() => {
+                                            //     // window.location = "login.html";
+                                            // }, "2000");
+
+                                            // limparFormulario();
+                                            // finalizarAguardar();
+
+                                            ListaBancoArtes = resposta
+
+                                        } else {
+                                            throw "Houve um erro ao tentar realizar o cadastro!";
+                                        }
+                                    })
+                                    .catch(function (resposta) {
+                                        console.log(`#ERRO: ${resposta}`);
+                                        finalizarAguardar();
+                                    });
+                            }
+
+
+                        }
+
+
+                        function Favoritos() {
+                            fetch("/aquarios/listar", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify({
+                                    fkUsuarioServer: sessionStorage.ID_USUARIO,
+                                })
+                            }).then(function (resposta) {
+                                console.log("ESTOU NO THEN DO entrar()!")
+
+                                if (resposta.ok) {
+                                    console.log(resposta);
+                                    resposta.json().then(json => {
+                                        console.log(json)
+                                        exibir.innerHTML = "";
+                                        var contador = 0;
+
+                                        exibir.innerHTML += `Total: <b>${json.length}</b><br>`
+
+                                        while (contador <= json.length - 1) {
+
+                                            exibir.innerHTML += `${contador + 1}º - ${json[contador].ArtesQueGosta}<br>`
+
+                                            contador++
+
+                                        }
+
+                                        ListaArtes = json;
+
+
+                                        exibir.innerHTML += `A arte que mais gosta é ${json[0].ArtesQueGosta}. <br> E desses, o que menos gosta é ${json[json.length - 1].ArtesQueGosta}`
+                                    })
+
+
+                                }
+                            });
+
+
+
+                        }
+
+                        function deletarLista() {
+
+                            fetch(`/aquarios/deletarLista/${sessionStorage.ID_USUARIO}`, {
+                                method: "DELETE",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                }
+                            }).then(function (resposta) {
+
+                                if (resposta.ok) {
+
+                                    Favoritos()
+                                    
+                                } else if (resposta.status == 404) {
+                                    window.alert("Deu 404!");
+                                } else {
+                                    throw ("Houve um erro ao tentar realizar a postagem! Código da resposta: " + resposta.status);
+                                }
+                            }).catch(function (resposta) {
+                                console.log(`#ERRO: ${resposta}`);
+                            });
+                        }
+
+                    </script>
+                </div>
+            </div>
+
             <div id="alerta">
             </div>
             <div class="regua">
-                <div class="item-regua perigo-frio">
+                <!-- <div class="item-regua perigo-frio">
                     <h4>Perigo</h4>
                     <h2>&lt;=5°C</h2>
                 </div>
@@ -75,15 +240,15 @@
                 </div>
                 <div class="item-regua perigo-quente">
                     <h4>Perigo</h4>
-                    <h2>&gt;=23°C</h2>
-                </div>
+                    <h2>&gt;=23°C</h2> -->
             </div>
-
+        </div>
+        <!-- 
             <div class="cards" id="cardAquarios">
 
-            </div>
+            </div> -->
 
-        </div>
+    </div>
 
     </div>
 
